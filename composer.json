@@ -1,5 +1,5 @@
 {
-    "name": "45lailson/E-Commece",
+    "name": "45lailson/ecommece",
     "authors": [
         {
             "name": "lailson",
@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "": "vendor\\hcodebr\\php-classes\\src"
+            "Hcode\\": "vendor\\hcodebr\\php-classes\\src"
         }
     }
 }
