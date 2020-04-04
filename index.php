@@ -14,7 +14,7 @@ use\Hcode\Model\User;
 //crinado uma nova aplicação
 $app = new Slim();
 
-//executa a função
+//rota do templeta index
 
 $app->config('debug', true);
 
@@ -28,7 +28,7 @@ $app->get('/', function() {
    
 });
 
-//Criando A Rota para a PageAdmin
+//Criando A Rota para a PageAdmin Administração
 
 $app->get('/admin', function()  {
 
@@ -54,6 +54,8 @@ $app->get('/admin/login', function() {
 	$page->setTpl("login");
 });
 
+// Rota para validar na tela de login
+
 $app->post('/admin/login' , function() {
 
 	User::login($_POST["login"], $_POST["password"]);
@@ -62,6 +64,8 @@ $app->post('/admin/login' , function() {
 	exit;
 
 });
+
+// Rota que faz o logout do usuario
 
 $app->get('/admin/logout',function() {
 
@@ -186,6 +190,7 @@ $app->post("/admin/users/:iduser", function($iduser) {
 
 });
 
+// Rota do template de esqueci a senha
 
 $app->get("/admin/forgot", function() {
 
@@ -197,6 +202,8 @@ $app->get("/admin/forgot", function() {
 	$page->setTpl("forgot");
 
 });
+
+//Rota Para Recuperar a senha por email e que foi enviado
 
 $app->post("/admin/forgot", function(){
 
@@ -218,7 +225,53 @@ $app->get("/admin/forgot/sent", function(){
 
 });
 
+//Rota para Redefinir a Senha
 
+$app->get("/admin/forgot/reset", function(){
+
+	$user = User::validForgotDecrypt($_GET["code"]);
+
+	  $page = new Hcode\PageAdmin([
+		"header"=>false,
+		"footer"=>false
+
+	]);
+
+	$page->setTpl("forgot-reset", array(
+		"name"=>$user["desperson"],
+		"code"=>$_GET["code"]
+
+	));
+
+});
+
+//Rota pra redefinir a senha no prazo de 1 hora como foi a nossa validação 
+
+$app->post("/admin/forgot/reset", function(){
+
+	$forgot = User::validForgotDecrypt($_POST["code"]);
+
+	User::setFogotUsed($forgot["idrecovery"]);
+
+	$user = new User();
+
+	$user->get((int)$forgot["iduser"]);
+
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT,[
+		"cost"=>10
+	]);
+
+	$user->setPassword($password);
+
+	$page = new PageAdmin([
+		"header"=>false,
+		"footer"=>false
+
+	]);
+
+	$page->setTpl("forgot-reset-success");
+
+});
 
 //execulta a função
 $app->run();

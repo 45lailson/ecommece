@@ -4,6 +4,7 @@ namespace Hcode\Model;
 
 use \Hcode\DB\Sql;
 use \Hcode\Model;
+use \Hcode\Mailer;
 
 class User extends Model {
 
@@ -14,14 +15,20 @@ class User extends Model {
 	const ERROR_REGISTER = "UserErrorRegister";
 	const SUCCESS = "UserSucesss";
 
+	// metodo que faz uma busca no banco e se e valido
+
 	public static function login($login, $password)
 	{
-
+       //instaciando a classe sql
 		$sql = new Sql();
+
+		// faz uma consulta no banco de dados na tabela users
 
 		$results = $sql->select ("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
 			":LOGIN"=>$login
 		));
+
+		// if verifica se o results e igual a 0 e cria uma expection
 
 		if (count($results) === 0)
 		{
@@ -29,7 +36,11 @@ class User extends Model {
 			
 		}
 
+		// Primeiro registro encontrado
+
 		$data = $results[0];
+
+		//Validação da senha
 
 		if (password_verify($password, $data["despassword"]) === true)
 		{
@@ -50,17 +61,18 @@ class User extends Model {
 
 	}
 
+    //Metodo que Verifica que se o usuario esta logado ou não
 	public static function verifyLogin($inadmin = true)
 	{
 
 		if (
-			!isset($_SESSION[User::SESSION])
+			!isset($_SESSION[User::SESSION]) // se ela foi definido
 			||
-			!$_SESSION[User::SESSION]
+			!$_SESSION[User::SESSION] // se ela for falsa
 			||
-			!(int)$_SESSION[User::SESSION]["iduser"] > 0
+			!(int)$_SESSION[User::SESSION]["iduser"] > 0 // verifica se o id do usuario e  maior q 0 e ser for e um usuario
 			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin
+			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin // verifica se e um admistrador
 			
 		) {
 
@@ -68,6 +80,8 @@ class User extends Model {
 			exit;
 		}
 	}
+
+	//metodo que excluir a session deslogando o usuario
 
 	public static function logout()
 	{
@@ -158,7 +172,9 @@ class User extends Model {
 	 	));
 	 }
 
-	 public static function getForgot($email) 
+	 // Metodo que Recupera a senha do usuario com o email Cadastrado no Banco
+
+	 public static function getForgot($email, $inadmin = true) 
 	 {
 	 	$sql = new Sql();
 
@@ -171,6 +187,8 @@ class User extends Model {
 	 		":email"=>$email
 	 	));
 
+	 	// Verifica se o email existe no banco Cadastrado
+
 	 	if(count($results) === 0)
 	 	{
 	 		throw new \Exception("Não foi possivel recupera a senha");
@@ -181,10 +199,12 @@ class User extends Model {
 
 	    	$data = $results[0];
 
-	    	$results2 = $sql->select("CALL sp_userspasswordrecoveries_create(:iduser , :desip)",array(
-	    		"iduser"=>$data["iduser"],
+	    	$results2 = $sql->select("CALL sp_userspasswordsrecoveries_create(:iduser , :desip)",array(
+	    		":iduser"=>$data["iduser"],
 	    		":desip"=>$_SERVER["REMOTE_ADDR"]
 	    	));
+
+	    	// Verifica se ouve algum problema na nossa procedure
 
 	    	if (count($results2) === 0)
 	    	{
@@ -211,7 +231,7 @@ class User extends Model {
 					
 				}				
 
-				$mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha do Lailson Store", "forgot", array(
+				$mailer = new Mailer($data['desemail'], $data['desperson'], "Redefinir senha da Loja Virtual LS Store", "forgot", array(
 					"name"=>$data['desperson'],
 					"link"=>$link
 				));				
@@ -219,6 +239,7 @@ class User extends Model {
 				$mailer->send();
 
 				return $link;
+				//return $data;
 
 	    	}
 
@@ -229,8 +250,70 @@ class User extends Model {
 	
 	}
 
+   //Metodo para desicriptar
+	
+		public static function validForgotDecrypt($code)
+		{
 
+			$code = base64_decode($code);
 
+			$idrecovery = openssl_decrypt($code, 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
+
+			$sql = new Sql();
+
+			$results = $sql->select("
+				SELECT *
+				FROM tb_userspasswordsrecoveries a
+				INNER JOIN tb_users b USING(iduser)
+				INNER JOIN tb_persons c USING(idperson)
+				WHERE
+					a.idrecovery = :idrecovery
+				AND
+					a.dtrecovery IS NULL
+				AND
+					DATE_ADD(a.dtregister, INTERVAL 1 HOUR) >= NOW();
+				", array(
+				":idrecovery"=>$idrecovery
+			));
+
+			if (count($results) === 0)
+			{
+				throw new \Exception("Não foi possível recuperar a senha.");
+			}
+			else
+			{
+
+				return $results[0];
+
+			}
+
+	
+	}
+
+	public static function setFogotUsed($idrecovery)
+	{
+
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_userspasswordsrecoveries SET dtrecovery = NOW() WHERE idrecovery = :idrecovery", array(
+			":idrecovery"=>$idrecovery
+
+		));
+
+	}	
+
+	public function setPassword($password)
+    {
+
+    	$sql = new Sql();
+
+    	$sql->query("UPDATE tb_users SET despassword = :password WHERE iduser = :iduser" , array(
+    		":password"=>$password,
+    		":iduser"=>$this->getiduser()
+
+    	));
+
+	}
 }
 
 
