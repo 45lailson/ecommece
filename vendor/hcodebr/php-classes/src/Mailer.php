@@ -8,8 +8,8 @@ use Rain\Tpl;
 
 class Mailer {
 
-		const USERNAME = "seu email";
-		const PASSWORD = "sua senha";
+		const USERNAME = "coreytoddtaylormaggot45@hotmail.com";
+		const PASSWORD = "slipknot0123";
 		const NAME_FROM = "canal Lailson Store";
 
 	
