@@ -8,7 +8,7 @@ use  \Hcode\Model\Product;
 
 $app->get("/admin/products", function(){
 
-	User:: verifyLogin();
+	User::verifyLogin();
 
 	$products = Product::listAll();
 
@@ -24,7 +24,7 @@ $app->get("/admin/products", function(){
 
 $app->get("/admin/products/create", function(){
 
-	User:: verifyLogin();
+	User::verifyLogin();
 
 	$page = new PageAdmin();
 
@@ -32,12 +32,11 @@ $app->get("/admin/products/create", function(){
 
 });
 
-
 //Rota para salvar os produtos
 
 $app->post("/admin/products/create", function(){
 
-	User:: verifyLogin();
+	User::verifyLogin();
 
 	$product = new Product();
 
@@ -49,7 +48,6 @@ $app->post("/admin/products/create", function(){
 	exit;
 
 });
-
 //Rota para editar os produtos
 
 $app->get("/admin/products/:idproduct", function($idproduct){

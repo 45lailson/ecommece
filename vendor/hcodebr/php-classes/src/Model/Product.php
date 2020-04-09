@@ -17,12 +17,32 @@ class Product extends Model {
 
 	}
 
+	// Metodo Static para verificar e passar a foto
+
+	public static function checkList($list)
+	{
+
+		foreach ($list as &$row) {
+
+			$p = new Product();
+			$p->setData($row);
+			$row = $p->getValues();
+		}
+
+		return $list;
+	}
+
+	
+
+	//Metodo Para salvar os Produtos no banco
+
 	public function save()
 	{
 
 		$sql = new Sql();
 
 		$results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :desurl)", array(
+
 			":idproduct"=>$this->getidproduct(),
 			":desproduct"=>$this->getdesproduct(),
 			":vlprice"=>$this->getvlprice(),
@@ -33,11 +53,10 @@ class Product extends Model {
 			":desurl"=>$this->getdesurl()
 		));
 
-		//$this->setData($results[0]);
-
-
-
+		$this->setData($results[0]);
 	}
+
+
 	
 	public function get($idproduct)
 	{
@@ -81,7 +100,7 @@ class Product extends Model {
 			$url = "/res/site/img/product.jpg";
 		}
 
-	return $this->setdesphoto($url);
+		return $this->setdesphoto($url);
 	}
 
 	public function getValues()
@@ -95,6 +114,7 @@ class Product extends Model {
 
 	public function setPhoto($file)
 	{
+		//explode — Divide uma string em strings
 		$extension = explode('.' , $file['name']);
 		$extension = end($extension);
 

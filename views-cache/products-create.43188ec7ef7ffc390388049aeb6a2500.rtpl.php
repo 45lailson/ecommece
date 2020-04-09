@@ -46,8 +46,8 @@
               <input type="number" class="form-control" id="vllength" name="vllength" step="0.01" placeholder="0.00">
             </div>
             <div class="form-group">
-              <label for="desurl">Peso</label>
-              <input type="number" class="form-control" id="desurl" name="desurl" step="0.01" placeholder="0.00">
+              <label for="vlweight">Peso</label>
+              <input type="number" class="form-control" id="vlweight" name="vlweight" step="0.01" placeholder="0.00">
             </div>
              <div class="form-group">
               <label for="desurl">URL</label>
