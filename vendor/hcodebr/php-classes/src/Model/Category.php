@@ -8,6 +8,9 @@ use \Hcode\Mailer;
 
 class Category extends Model {
 
+
+	//Lista as cotegorias
+
 	public static function listAll()
 	{
 
@@ -16,6 +19,8 @@ class Category extends Model {
 		return $sql->select("SELECT * FROM tb_categories ORDER BY descategory");
 
 	}
+
+	//Salva uma categoria
 
 
 	public function save()
@@ -36,6 +41,8 @@ class Category extends Model {
 
 	}
 
+	//retorna uma cateforia por id
+
 	public function get($idcategory)
 	{
 		$sql = new Sql();
@@ -48,6 +55,8 @@ class Category extends Model {
 
 	}
 
+	//Deleta uma categoria
+
 	public function delete()
 	{
 		$sql = new Sql();
@@ -59,6 +68,9 @@ class Category extends Model {
 
 			Category::updateFile();
 	}
+
+
+    //Atualiza um Arquivo
 
 	public static function updateFile()
 	{
@@ -113,6 +125,39 @@ class Category extends Model {
 
 	}
 
+	public function getProductsPage($page = 1, $itemsPerPage = 3)
+	{
+
+		$start = ($page - 1) * $itemsPerPage;
+
+		$sql = new Sql();
+
+		$results = $sql->select("
+			SELECT SQL_CALC_FOUND_ROWS *
+			FROM tb_products a 
+			INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct
+			INNER JOIN tb_categories c ON c.idcategory = b.idcategory
+			WHERE c.idcategory = :idcategory
+			LIMIT $start, $itemsPerPage;
+		",[
+			':idcategory'=>$this->getidcategory()
+
+		]);
+		
+		$resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal;");
+
+		return [
+			'data'=>Product::checkList($results),
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage)
+
+		];
+
+			
+	}
+
+	//Adiciona um produto
+
 	public function addProduct(Product $product)
 	{
 		$sql = new Sql();
@@ -123,6 +168,8 @@ class Category extends Model {
 
 		]);
 	}
+
+	//Remove um Produto
 
 	public function RemoveProduct(Product $product)
 	{

@@ -127,6 +127,8 @@ $app->get("/admin/categories/:idcategory/products", function($idcategory){
 
 });
 
+//Rota para adicionar uma categoria
+
 $app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idcategory,$idproduct){
 
 	User::verifyLogin();
@@ -145,6 +147,8 @@ $app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idc
 	exit;
 
 });
+
+//Rota para deletar uma categoria
 
 $app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($idcategory,$idproduct){
 
