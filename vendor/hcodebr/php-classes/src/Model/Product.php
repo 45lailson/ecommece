@@ -71,6 +71,8 @@ class Product extends Model {
 
 	}
 
+	//Metodo que Deleta o Produto
+
 	public function delete()
 	{
 
@@ -165,7 +167,7 @@ class Product extends Model {
 		$this->setData($rows[0]);
 	}
 
-	//
+	//Metodo que mostra a categoria que o produto e Relacionado
 
 	public function getCategories()
 	{

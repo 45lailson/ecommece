@@ -37,6 +37,8 @@ class Model {
 
 	}
 
+	//Metodo que Mostra Todos os Dados dinamicamente//
+
 	public function setData($data = array())
 	{
 

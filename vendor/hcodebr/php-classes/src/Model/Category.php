@@ -125,6 +125,8 @@ class Category extends Model {
 
 	}
 
+	//Metodo responsavel por paginação das paginas
+
 	public function getProductsPage($page = 1, $itemsPerPage = 3)
 	{
 

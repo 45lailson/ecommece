@@ -8,7 +8,7 @@ use  \Hcode\Model\Cart;
 
 $app->get('/', function() {
 
-	$products = Product::listAll();
+	$products = Product::listAll(); //Metodo Estatico
 
 	//Instancia a classe page
 
@@ -20,9 +20,14 @@ $app->get('/', function() {
    
 });
 
+// Rota que define a quantidade de produtos que vai ser comprado
+
+
 $app->get("/categories/:idcategory", function($idcategory){
 
-	$page = (isset($_GET['page'])) ? (int)$_GET['page'] :1;
+	//Isset verifica se foi iniciada ou se existe
+
+	$page = (isset($_GET['page'])) ? (int)$_GET['page'] :1; // Se não for definido a página é 1
 
 	$category = new Category();
 
@@ -32,9 +37,11 @@ $app->get("/categories/:idcategory", function($idcategory){
 
 	$pages = [];
 
+ //No for() que está acima, nós estamos criando links de paginação. Cada um deles irá referenciar o número da página, que no caso é a própria variável $i
+
 	for ($i=1; $i <= $pagination['pages'] ; $i++) { 
 		array_push($pages, [
-			'link'=>'/categories/'.$category->getidcategory(). '?page='.$i,
+			'link'=>'/categories/'.$category->getidcategory(). '?page='.$i, //Caminho que vai ser direcionado o usuário
 			'page'=>$i
 		]);
 	}
@@ -43,7 +50,7 @@ $app->get("/categories/:idcategory", function($idcategory){
 
 	$page->setTpl("category",[
 		'category'=>$category->getValues(),
-		'products'=>$pagination["data"],
+		'products'=>$pagination["data"], //produtos estão na chave data
 		'pages'=>$pages
 
 	]);
@@ -78,7 +85,8 @@ $app->get("/cart", function(){
 
 	$page->setTpl("cart",[
 		'cart'=>$cart->getValues(),
-		'products'=>$cart->getProducts()
+		'products'=>$cart->getProducts(),
+		'error'=>Cart::getMsgError()
 
 	]);
 
@@ -94,7 +102,11 @@ $app->get("/cart/:idproduct/add", function($idproduct) {
 
 	$cart = Cart::getFromSession();
 
+//Isset verifica se foi iniciada ou se existe
+
 	$qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
+
+// o laço for tem a função de colocar quantos os produtos serão adicionados no carrinho
 
 	for ($i=0; $i <  $qtd ; $i++) { 
 		
@@ -135,6 +147,19 @@ $app->get("/cart/:idproduct/remove", function($idproduct){
 	$cart = Cart::getFromSession();
 
 	$cart->removeProduct($product, true);
+
+	header("Location: /cart");
+	exit;
+
+});
+
+//Rota Para Calcular o Frete 
+
+$app->post("/cart/freight", function() {
+
+	$cart = Cart::getFromSession(); //Metodo Estatico
+
+	$cart->setFreight($_POST['zipcode']);
 
 	header("Location: /cart");
 	exit;

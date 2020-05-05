@@ -5,7 +5,7 @@ use  \Hcode\Model\User;
 use  \Hcode\Model\Category;
 use  \Hcode\Model\Product;
 
-//Rota Para Categoria
+//Rota Para lista Categoria
 
 $app->get("/admin/categories", function(){
 
@@ -88,7 +88,7 @@ exit;
 
 });
 
-// Rota para Salvar uma Categoria
+// Rota para Atualizar uma Categoria
 
 $app->get("/admin/categories/:idcategory", function($idcategory){
 
@@ -107,6 +107,8 @@ $page->setTpl("categories-update",[
 
 });
 
+//Rota Para Mostrar Produtos Relacionados Por sua Categotia
+//Rota Para Mostrar Produtos Que não esta Relacionados 
 
 $app->get("/admin/categories/:idcategory/products", function($idcategory){
 

@@ -10,7 +10,7 @@ $app->get("/admin/products", function(){
 
 	User::verifyLogin();
 
-	$products = Product::listAll();
+	$products = Product::listAll(); //Metodo listAll
 
 	$page = new PageAdmin();
 
@@ -24,7 +24,7 @@ $app->get("/admin/products", function(){
 
 $app->get("/admin/products/create", function(){
 
-	User::verifyLogin();
+	User::verifyLogin(); //Verifica o Login
 
 	$page = new PageAdmin();
 
