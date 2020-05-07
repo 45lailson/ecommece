@@ -255,9 +255,12 @@ class User extends Model {
 
 				$dataRecovery = $results2[0];
 
+
 				$code = openssl_encrypt($dataRecovery['idrecovery'], 'AES-128-CBC', pack("a16", User::SECRET), 0, pack("a16", User::SECRET_IV));
 
 				$code = base64_encode($code);
+
+				
 
 				if ($inadmin === true) {
 
