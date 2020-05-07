@@ -408,12 +408,16 @@ class User extends Model {
 
 	}
 
+	//Metodo que recebe a mensagem do erro
+
 	public static function setErrorRegister($msg)
 	{
 
 		$_SESSION[User::ERROR_REGISTER] = $msg;
 
 	}
+
+	//Metodo que pega o erro na sessão
 
 	public static function getErrorRegister()
 	{
@@ -426,12 +430,16 @@ class User extends Model {
 
 	}
 
+	//Metodo que Limpa o erro
+
 	public static function clearErrorRegister()
 	{
 
 		$_SESSION[User::ERROR_REGISTER] = NULL;
 
 	}
+
+	//Metodo que verefica se o login existe
 
 	public static function checkLoginExist($login)
 	{

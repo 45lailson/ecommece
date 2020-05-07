@@ -197,7 +197,9 @@ $app->get("/login", function(){
 	$page = new Page();
 
 	$page->setTpl("login", [
-		'error'=>User::getError()
+		'error'=>User::getError(),
+		'errorRegister'=>User::getErrorRegister(),
+		'registerValues'=>(isset($_SESSION['registerValues'])) ? $_SESSION['registerValues'] : ['name'=>'', 'email'=>'','phone'=>'']
 	]);
 
 });
@@ -229,6 +231,85 @@ User::logout();
 
 header("Location: /login");
 exit;
+
+});
+
+//Rota Para Realizar o Cadastro
+
+$app->post("/register" , function(){
+
+	$_SESSION['registerValues'] = $_POST;
+
+	//if para verifica se o nome não foi definido e diferente de vazio e retornarar a mensagem
+
+	if(!isset($_POST['name']) || $_POST['name'] == '') {
+
+		User::setErrorRegister("Preencha o seu nome.");
+		header("Location: /login");
+		exit;
+
+	}
+
+	//if para verifica se o email não foi definido e diferente de vazio e retornarar a mensagem
+
+	if(!isset($_POST['email']) || $_POST['email'] == '') {
+
+		User::setErrorRegister("Preencha o seu e-mail.");
+		header("Location: /login");
+		exit;
+
+	}
+
+
+	//if para verifica se o password não foi definido e diferente de vazio e retornarar a mensagem
+
+	if(!isset($_POST['password']) || $_POST['password'] == '') {
+
+		User::setErrorRegister("Preencha a sua Senha.");
+		header("Location: /login");
+		exit;
+
+	}
+
+	//if para verifica se o password não foi definido e diferente de vazio e retornarar a mensagem
+
+	if(!isset($_POST['password']) || $_POST['password'] == '') {
+
+		User::setErrorRegister("Preencha a sua Senha.");
+		header("Location: /login");
+		exit;
+
+	}
+
+	//if para verifica se o email ja existe
+
+	if(User::checkLoginExist($_POST['email']) === true) {
+		User::setErrorRegister("Este endereco de e-mail já está sendo usado por outro Usuário.");
+		header("Location: /login");
+		exit;
+
+	}
+
+
+	$user = new User();
+
+	$user->setData([
+		'inadmin'=>0,
+		'deslogin'=>$_POST['email'],
+		'desperson'=>$_POST['name'],
+		'desemail'=>$_POST['email'],
+		'despassword'=>$_POST['password'],
+		'nrphone'=>$_POST['phone']
+
+	]); 
+
+	$user->save();
+
+	User::login($_POST['email'], $_POST['password']);
+
+	header('Location: /checkout');
+	exit;
+
 
 });
 
