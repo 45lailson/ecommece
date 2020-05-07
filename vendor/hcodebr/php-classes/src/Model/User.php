@@ -45,11 +45,11 @@ class User extends Model {
 			return false;
 
 		} else {
-
+                //verifica se for verdadeiro na variavel $admin e na sesssion inadim vdd tbm
 			if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) {
 
 				return true;
-
+              
 			} else if ($inadmin === false) {
 
 				return true;
@@ -103,12 +103,14 @@ class User extends Model {
 
 	public static function verifyLogin($inadmin = true)
 	{
-
+        //if verifica de ser for difetente de $inadimin
 		if (!User::checkLogin($inadmin)) {
-
+             
 			if ($inadmin) {
+				//$se for entra no if e vai para a tela de login de adm
 				header("Location: /admin/login");
 			} else {
+				//se não vai para tela de usuarios comum
 				header("Location: /login");
 			}
 			exit;
@@ -154,6 +156,8 @@ class User extends Model {
 		$this->setData($results[0]);
 
 	}
+
+	//Metodo que tras um usuario especifico
 
 	public function get($iduser)
 	{
@@ -345,6 +349,8 @@ class User extends Model {
 
 	}
 
+	//Metodo que coloca a Msg dentro de uma seção
+
 	public static function setError($msg)
 	{
 
@@ -352,16 +358,21 @@ class User extends Model {
 
 	}
 
+	//Metodo que pega os Erros da sessão
+
 	public static function getError()
 	{
-
+        //verifica se o erro estiver definido e se ele não for vazio vai retornar a mensagem de erro se não retorna vazio
 		$msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : '';
 
+		//Limpa o erro
 		User::clearError();
 
 		return $msg;
 
 	}
+
+	//Metodo Para Limpar os erros na Sessão
 
 	public static function clearError()
 	{
@@ -369,6 +380,8 @@ class User extends Model {
 		$_SESSION[User::ERROR] = NULL;
 
 	}
+
+	//Metodo que
 
 	public static function setSuccess($msg)
 	{
@@ -432,6 +445,8 @@ class User extends Model {
 		return (count($results) > 0);
 
 	}
+
+	//Metodo que faz a criptografia da senha
 
 	public static function getPasswordHash($password)
 	{

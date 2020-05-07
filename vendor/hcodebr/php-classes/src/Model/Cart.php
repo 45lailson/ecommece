@@ -56,7 +56,7 @@ class Cart extends Model {
 
 	}
 
-	//
+	
 
 	public function setToSession()
 	{
