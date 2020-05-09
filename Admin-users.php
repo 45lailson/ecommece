@@ -35,17 +35,18 @@ $app->get("/admin/users", function() {
 
 	$app->get("/admin/users/:iduser/delete", function($iduser) {
 
-	User::verifyLogin();
+		User::verifyLogin();	
 
-	$user = new User();
+		$user = new User();
 
-	$user->get((int)$iduser);
+		$user->get((int)$iduser);
 
-	$user->delete();
+		$user->delete();
 
-	header("Location: /admin/users");
+		header("Location: /admin/users");
+		exit;
 
-	exit;
+
 
 });
 
