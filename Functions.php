@@ -1,6 +1,7 @@
 <?php 
 
 use  \Hcode\Model\User;
+use  \Hcode\Model\Cart;
 
 //Formata os valores em BR $
 
@@ -25,6 +26,24 @@ function getUserName() {
 	$user = User::getFromSession();
 
 	return $user->getdesperson();
+}
+
+function getCartNrQtd()
+{
+	$cart = Cart::getFromSession();
+
+	$totals = $cart->getProductsTotals();
+
+	return $totals['nrqtd'];
+}
+
+function getCartvlSubTotal()
+{
+	$cart = Cart::getFromSession();
+
+	$totals = $cart->getProductsTotals();
+
+	return formatPrice($totals['vlprice']);
 }
 
 
