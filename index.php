@@ -22,6 +22,7 @@ require_once("Admin.php");
 require_once("Admin-users.php");
 require_once("Admin-categories.php");
 require_once("Admin-products.php");
+require_once("Admin-orders.php");
 
 
 //execulta a função

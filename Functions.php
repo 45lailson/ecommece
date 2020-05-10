@@ -12,6 +12,11 @@ function formatPrice( $vlprice)
 	return number_format($vlprice, 2, "," , ".");
 }
 
+function formatDate($date)
+{
+	return date('d/m/Y', strtotime($date));
+}
+
 //Metodo que nos permite ser usado no template no escopo namespace Global
 
 function checkLogin($inadmin = true) {
