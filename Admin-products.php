@@ -40,8 +40,6 @@ $app->get("/admin/products", function(){
 	}
 
 
-	$products = Product::listAll(); //Metodo listAll
-
 	$page = new PageAdmin();
 
 	$page->setTpl("products",[
